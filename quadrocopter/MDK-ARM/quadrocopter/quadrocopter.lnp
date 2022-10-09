@@ -1,0 +1,28 @@
+--cpu=Cortex-M4.fp.sp
+"quadrocopter\startup_stm32f413xx.o"
+"quadrocopter\main.o"
+"quadrocopter\stm32f4xx_it.o"
+"quadrocopter\stm32f4xx_hal_msp.o"
+"quadrocopter\stm32f4xx_hal_i2c.o"
+"quadrocopter\stm32f4xx_hal_i2c_ex.o"
+"quadrocopter\stm32f4xx_hal_rcc.o"
+"quadrocopter\stm32f4xx_hal_rcc_ex.o"
+"quadrocopter\stm32f4xx_hal_flash.o"
+"quadrocopter\stm32f4xx_hal_flash_ex.o"
+"quadrocopter\stm32f4xx_hal_flash_ramfunc.o"
+"quadrocopter\stm32f4xx_hal_gpio.o"
+"quadrocopter\stm32f4xx_hal_dma_ex.o"
+"quadrocopter\stm32f4xx_hal_dma.o"
+"quadrocopter\stm32f4xx_hal_pwr.o"
+"quadrocopter\stm32f4xx_hal_pwr_ex.o"
+"quadrocopter\stm32f4xx_hal_cortex.o"
+"quadrocopter\stm32f4xx_hal.o"
+"quadrocopter\stm32f4xx_hal_exti.o"
+"quadrocopter\stm32f4xx_hal_tim.o"
+"quadrocopter\stm32f4xx_hal_tim_ex.o"
+"quadrocopter\stm32f4xx_hal_uart.o"
+"quadrocopter\system_stm32f4xx.o"
+--strict --scatter "quadrocopter\quadrocopter.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "quadrocopter.map" -o quadrocopter\quadrocopter.axf
