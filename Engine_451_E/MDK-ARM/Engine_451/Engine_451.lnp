@@ -1,0 +1,26 @@
+--cpu=Cortex-M4.fp.sp
+"engine_451\startup_stm32f405xx.o"
+"engine_451\motor.o"
+"engine_451\main.o"
+"engine_451\stm32f4xx_it.o"
+"engine_451\stm32f4xx_hal_msp.o"
+"engine_451\system_stm32f4xx.o"
+"engine_451\stm32f4xx_hal_tim.o"
+"engine_451\stm32f4xx_hal_tim_ex.o"
+"engine_451\stm32f4xx_hal_rcc.o"
+"engine_451\stm32f4xx_hal_rcc_ex.o"
+"engine_451\stm32f4xx_hal_flash.o"
+"engine_451\stm32f4xx_hal_flash_ex.o"
+"engine_451\stm32f4xx_hal_flash_ramfunc.o"
+"engine_451\stm32f4xx_hal_gpio.o"
+"engine_451\stm32f4xx_hal_dma_ex.o"
+"engine_451\stm32f4xx_hal_dma.o"
+"engine_451\stm32f4xx_hal_pwr.o"
+"engine_451\stm32f4xx_hal_pwr_ex.o"
+"engine_451\stm32f4xx_hal_cortex.o"
+"engine_451\stm32f4xx_hal.o"
+"engine_451\stm32f4xx_hal_exti.o"
+--strict --scatter "Engine_451\Engine_451.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "Engine_451.map" -o Engine_451\Engine_451.axf
