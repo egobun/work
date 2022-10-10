@@ -349,7 +349,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 {
 	/* USER CODE BEGIN TIM8_TRG_COM_TIM14_IRQn 0 */
 	
-	//TIM14->ARR = newARR;
+	TIM14->ARR = newARR;
 	if (i == 20)
 	{
 		i = 0;
