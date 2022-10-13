@@ -36,6 +36,7 @@ float speed = 0.0f;
 //direction
 uint8_t direction = 1;
 uint8_t PWM_min = 0;
+uint8_t novel = 10;
 #define PWM_SIZE 20
 #define CCR_SIZE 35
 
@@ -57,13 +58,18 @@ float targetRate = 200;
 //direction
 
 uint8_t i = 0, state = 2;
-#define PWM_SIZE 20
+#define PWM_SIZE 40
+uint8_t PWM_variable_10[PWM_SIZE];
 uint8_t PWM_variable_20[PWM_SIZE];
 uint8_t PWM_variable_30[PWM_SIZE];
 uint8_t PWM_variable_40[PWM_SIZE];
+uint8_t PWM_variable_50[PWM_SIZE];
 uint8_t PWM_variable_60[PWM_SIZE];
 uint8_t PWM_variable_70[PWM_SIZE];
 uint8_t PWM_variable_80[PWM_SIZE];
+uint8_t PWM_variable_90[PWM_SIZE];
+uint8_t PWM_variable_100[PWM_SIZE];
+/*
 float PWM_SIN_Variable[20] = 
 {
 			0.006156, 
@@ -87,14 +93,179 @@ float PWM_SIN_Variable[20] =
 			0.993844, 
 			1.000000
 };
+*/
+/*
+float PWM_SIN_Variable[40] = 
+	{
+		0.039259808,
+		0.078459079,
+		0.117537373,
+		0.156434433,
+		0.195090282,
+		0.233445316,
+		0.271440395,
+		0.309016932,
+		0.346116988,
+		0.382683357,
+		0.418659656,
+		0.453990412,
+		0.488621149,
+		0.522498467,
+		0.555570131,
+		0.587785147,
+		0.61909384,
+		0.649447937,
+		0.6788006320,
+		0.707106666,
+		0.734322393,
+		0.760405849,
+		0.785316815,
+		0.809016879,
+		0.831469499,
+		0.852640053,
+		0.872495899,
+		0.89100642,
+		0.908143075,
+		0.923879439,
+		0.938191248,
+		0.951056436,
+		0.962455163,
+		0.972369856,
+		0.980785225,
+		0.987688295,
+		0.993068421,
+		0.996917309,
+		0.999229024,
+		1
+
+	};
+	*/
+	/*
+	float PWM_SIN_Variable[40] = 
+	{
+		0.039259808,
+		0.078459079,
+		0.117537373,
+		0.156434433,
+		0.195090282,
+		0.233445316,
+		0.271440395,
+		0.309016932,
+		0.346116988,
+		0.382683357,
+		0.418659656,
+		0.453990412,
+		0.488621149,
+		0.522498467,
+		0.555570131,
+		0.587785147,
+		0.61909384,
+		0.649447937,
+		0.6788006320,
+		0.707106666,
+		0.734322393,
+		0.760405849,
+		0.785316815,
+		0.809016879,
+		0.831469499,
+		0.852640053,
+		0.872495899,
+		0.89100642,
+		0.908143075,
+		0.923879439,
+		0.938191248,
+		0.951056436,
+		1,
+		0.999229024,
+		0.996917309,
+		0.993068421,
+		0.987688295,
+		0.980785225,
+		0.972369856,
+		0.962455163
+
+	};
+	*/
+		float PWM_SIN_Variable[40] = 
+	{
+		0.047581927,
+		0.095056066,
+		0.142314872,
+		0.189251289,
+		0.23575899,
+		0.281732622,
+		0.327068038,
+		0.37166254,
+		0.415415106,
+		0.458226622,
+		0.500000108,
+		0.540640932,
+		0.580057029,
+		0.618159111,
+		0.654860862,
+		0.690079142,
+		0.723734171,
+		0.755749708,
+		0.786053228,
+		0.814576083,
+		0.841253661,
+		0.866025528,
+		0.888835568,
+		0.909632108,
+		0.928368038,
+		0.945000915,
+		0.95949306,
+		0.971811643,
+		0.981928759,
+		0.98982149,	
+		0.995471956,
+		0.998867356,
+		1,
+		0.998867356,
+		0.995471956,
+		0.98982149,
+		0.981928759,
+		0.971811643,
+		0.95949306,
+		0.945000915
+	};
+/*
+
+float PWM_SIN_Variable[20] = 
+{
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1,
+			1
+};
+*/
 uint8_t* PWM_ARR = PWM_variable_20;
 void InitPower(uint8_t* pwm_arr, uint8_t power)
 {
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < 40; i++) {
+		pwm_arr[i] = PWM_SIN_Variable[i] * power;
+		/*
 		if (i <= 9)
 			pwm_arr[i] = PWM_SIN_Variable[i * 2] * power + 1;
 		else
 			pwm_arr[i] = PWM_SIN_Variable[18 - (i - 10) * 2] * power + 1;
+		*/
 	}
 	
 //	new_power = power;
@@ -110,13 +281,16 @@ void motor_init()
 	
 	for (int i = 0; i < ARR_SIZE; i++)
 		arr_data[i] = DEFAULT_ARR;
+	InitPower(PWM_variable_10, 10);
 	InitPower(PWM_variable_20, 20);
 	InitPower(PWM_variable_30, 30);
 	InitPower(PWM_variable_40, 40);
+	InitPower(PWM_variable_50, 50);
 	InitPower(PWM_variable_60, 60);
 	InitPower(PWM_variable_70, 70);
 	InitPower(PWM_variable_80, 80);
-	
+	InitPower(PWM_variable_90, 90);
+	InitPower(PWM_variable_100, 100);
 }
 
 void Enable(uint8_t new_state)
@@ -190,22 +364,53 @@ void SetSpeed(uint16_t rpm)
 	{
 		__disable_irq();
 		if (targetARRf < mean_arr) // ??????
-			newARR = (uint16_t)ARR_GetCut(fmax(mean_arr - step, targetARRf));
+			newARR = (uint16_t)ARR_GetCut(fmax(mean_arr - step*0.5, targetARRf));
 		else						// ??????????
-			newARR = (uint16_t)ARR_GetCut(fmin(mean_arr + step, targetARRf));
+			newARR = (uint16_t)ARR_GetCut(fmin(mean_arr + step*0.5, targetARRf));
 		
-		if (newARR > 1000)
+		if (newARR > 1300)
+			PWM_ARR = PWM_variable_10;
+		if (newARR > 570 && newARR <= 1300)
 			PWM_ARR = PWM_variable_20;
-		else if (newARR > 700)
+		if (newARR > 350 && newARR <= 570)
 			PWM_ARR = PWM_variable_30;
-		else if (newARR > 450)
+		if (newARR > 270 && newARR <= 350)
 			PWM_ARR = PWM_variable_40;
-		else if (newARR > 350)
-			PWM_ARR = PWM_variable_60;
-		else if (newARR > 270)
+		if (newARR > 210 && newARR <= 270)
+			PWM_ARR = PWM_variable_50;
+		if (newARR > 180 && newARR <= 210)
+			PWM_ARR = PWM_variable_60;		
+		if (newARR > 160 && newARR <= 180)
 			PWM_ARR = PWM_variable_70;
-		else
+		if (newARR > 140 && newARR <= 160)
 			PWM_ARR = PWM_variable_80;
+		if (newARR > 120 && newARR <= 140)
+			PWM_ARR = PWM_variable_90;
+		if (newARR <= 120)
+			PWM_ARR = PWM_variable_100;
+		
+		/*
+		if (novel == 10)
+			PWM_ARR = PWM_variable_10;
+		if (novel == 20)
+			PWM_ARR = PWM_variable_20;
+		else if (novel == 30)
+			PWM_ARR = PWM_variable_30;
+		else if (novel == 40)
+			PWM_ARR = PWM_variable_40;
+		else if (novel == 50)
+			PWM_ARR = PWM_variable_50;
+		else if (novel == 60)
+			PWM_ARR = PWM_variable_60;
+		else if (novel == 70)
+			PWM_ARR = PWM_variable_70;
+		else if (novel == 80)
+			PWM_ARR = PWM_variable_80;
+		else if (novel == 90)
+			PWM_ARR = PWM_variable_90;		
+		else if(novel == 100)
+			PWM_ARR = PWM_variable_100;
+			*/
 		__enable_irq();
 	}
 }
@@ -350,6 +555,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 	/* USER CODE BEGIN TIM8_TRG_COM_TIM14_IRQn 0 */
 	
 	TIM14->ARR = newARR;
+	/*
 	if (i == 20)
 	{
 		i = 0;
@@ -424,6 +630,180 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 		
 		if (!i)
 			TIM8->CCER |= 0x055;       	//Enable CH2 CH1
+		
+		break;
+	}
+	*/
+	
+	//two vesion
+	/*
+	if (i == 20)
+	{
+		i = 0;
+		if (direction)
+		{
+			if (state == 5)
+				state = 0;
+			else
+				state++;
+		}
+		else
+		{
+			if (state == 0)
+				state = 5;
+			else
+				state--;
+		}
+	}
+	
+	if (!i)
+		TIM8->CCER &= ~0x555;  			//Disable all
+	
+	switch(state)
+	{
+	case 0:
+		TIM8->CCR3 = PWM_ARR[i];
+		TIM8->CCR2 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x550;     	//Enable CH3 CH2
+		break;
+		
+	case 1:
+		TIM8->CCR3 = PWM_ARR[19-i];
+		TIM8->CCR1 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x505;      	//Enable CH3 CH1
+		
+		break;
+		
+	case 2:
+		TIM8->CCR2 = PWM_ARR[i];
+		TIM8->CCR1 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x055;       	//Enable CH2 CH1
+		
+		break;
+		
+	case 3:
+		TIM8->CCR2 = PWM_ARR[19-i];
+		TIM8->CCR3 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x550;      	//Enable CH3 CH2
+		
+		break;
+		
+	case 4:
+		TIM8->CCR1 = PWM_ARR[i];
+		TIM8->CCR3 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x505;      	//Enable CH3 CH1
+		
+		break;
+		
+	case 5:
+		TIM8->CCR1 = PWM_ARR[19-i];
+		TIM8->CCR2 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x055;       	//Enable CH2 CH1
+		
+		break;
+	}
+	*/
+	
+	if (i == 20)
+	{
+		i = 0;
+		if (direction)
+		{
+			if (state == 5)
+				state = 0;
+			else
+				state++;
+		}
+		else
+		{
+			if (state == 0)
+				state = 5;
+			else
+				state--;
+		}
+	}
+	
+	if (!i)
+		
+		//TIM8->CCER &= ~0x555;  			//Disable all
+		TIM8->CCER |= 0x555;     		
+	switch(state)
+	{
+	case 0:
+		//TIM8->CCR3 = PWM_ARR[i];
+		TIM8->CCR3 = PWM_ARR[19-i];
+		TIM8->CCR2 = PWM_ARR[39-i];
+		TIM8->CCR1 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x555;     	//Enable CH3 CH2
+	
+		break;
+		
+	case 1:
+		TIM8->CCR3 = PWM_ARR[i+20];
+		//TIM8->CCR2 = PWM_ARR[19-i];
+		TIM8->CCR2 = PWM_ARR[i];
+		TIM8->CCR1 = PWM_min;
+		
+		if (!i)
+			TIM8->CCER |= 0x555;      	//Enable CH3 CH1
+		
+		break;
+		
+	case 2:
+		TIM8->CCR3 = PWM_ARR[39-i];
+		TIM8->CCR2 = PWM_min;
+		//TIM8->CCR1 = PWM_ARR[i];
+		TIM8->CCR1 = PWM_ARR[19-i];
+		
+		if (!i)
+			TIM8->CCER |= 0x555;       	//Enable CH2 CH1
+		
+		break;
+		
+	case 3:
+		//TIM8->CCR3 = PWM_ARR[19-i];
+		TIM8->CCR3 = PWM_ARR[i];
+		TIM8->CCR2 = PWM_min;
+		TIM8->CCR1 = PWM_ARR[i+20];
+		
+		if (!i)
+			TIM8->CCER |= 0x555;      	//Enable CH3 CH2
+		
+		break;
+		
+	case 4:
+		TIM8->CCR3 = PWM_min;
+		//TIM8->CCR2 = PWM_ARR[i];
+		TIM8->CCR2 = PWM_ARR[19-i];
+		TIM8->CCR1 = PWM_ARR[39-i];
+		
+		if (!i)
+			TIM8->CCER |= 0x555;      	//Enable CH3 CH1
+		
+		break;
+		
+	case 5:
+		TIM8->CCR3 = PWM_min;
+		TIM8->CCR2 = PWM_ARR[i+20];
+		//TIM8->CCR1 = PWM_ARR[19-i];
+		TIM8->CCR1 = PWM_ARR[i];
+		
+		if (!i)
+			TIM8->CCER |= 0x555;       	//Enable CH2 CH1
 		
 		break;
 	}

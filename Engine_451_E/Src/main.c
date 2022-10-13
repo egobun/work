@@ -122,6 +122,7 @@ int main(void)
 	//For state 2:
 	TIM8->CCER &= ~0x555;  	//Disable CH3N
 	TIM8->CCER |= 0x555; 		//Enable CH3
+	
 	motor_init();
 	Enable(1);
 	SetDirection(0);
