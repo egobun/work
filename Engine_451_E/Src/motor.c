@@ -56,7 +56,8 @@ float targetRate = 200;
 //For speed
 
 //direction
-
+float step_way[2] = {0,};
+uint8_t counter_step = 0;
 uint8_t i = 0, state = 2;
 #define PWM_SIZE 40
 uint8_t PWM_variable_10[PWM_SIZE];
@@ -186,6 +187,7 @@ float PWM_SIN_Variable[40] =
 
 	};
 	*/
+	/*
 		float PWM_SIN_Variable[40] = 
 	{
 		0.047581927,
@@ -229,6 +231,50 @@ float PWM_SIN_Variable[40] =
 		0.95949306,
 		0.945000915
 	};
+	*/
+	float PWM_SIN_Variable[40] = 
+	{
+		0.047581927,
+		0.095056066,
+		0.142314872,
+		0.189251289,
+		0.23575899,
+		0.281732622,
+		0.327068038,
+		0.37166254,
+		0.415415106,
+		0.458226622,
+		0.500000108,
+		0.540640932,
+		0.580057029,
+		0.618159111,
+		0.654860862,
+		0.690079142,
+		0.723734171,
+		0.755749708,
+		0.786053228,
+		0.814576083,
+		0.841253661,
+		0.866025528,
+		0.888835568,
+		0.909632108,
+		0.928368038,
+		0.945000915,
+		0.95949306,
+		0.971811643,
+		0.981928759,
+		0.98982149,	
+		0.995471956,
+		0.998867356,
+		1,
+		0.995471956,
+		0.981928759,
+		0.95949306,
+		0.928368038,
+		0.888835568,
+		0.841253661,
+		0.786053228
+	};
 /*
 
 float PWM_SIN_Variable[20] = 
@@ -268,6 +314,25 @@ void InitPower(uint8_t* pwm_arr, uint8_t power)
 		*/
 	}
 	
+//	new_power = power;
+//	uint8_t i = 0;
+//	for (; i < 20; i++)
+//	{
+//		PWM_variable[i] = (uint8_t)(PWM_SIN_Variable[i]*(float)power);
+//	}
+}
+uint8_t InitPower2(uint8_t* pwm_arr, uint8_t power)
+{
+	for (i = 0; i < 40; i++) {
+		pwm_arr[i] = PWM_SIN_Variable[i] * power;
+		/*
+		if (i <= 9)
+			pwm_arr[i] = PWM_SIN_Variable[i * 2] * power + 1;
+		else
+			pwm_arr[i] = PWM_SIN_Variable[18 - (i - 10) * 2] * power + 1;
+		*/
+	}
+	return *pwm_arr;
 //	new_power = power;
 //	uint8_t i = 0;
 //	for (; i < 20; i++)
@@ -363,10 +428,17 @@ void SetSpeed(uint16_t rpm)
 //	else 
 	{
 		__disable_irq();
+		/*
+		if(newARR < 1000 && fabs(step_way[1] - step_way[0]) > 3)
+			step = step * 0.5;
+		*/
+		if(newARR < 160)
+			step = step * 0.5;
+		
 		if (targetARRf < mean_arr) // ??????
-			newARR = (uint16_t)ARR_GetCut(fmax(mean_arr - step*0.5, targetARRf));
+			newARR = (uint16_t)ARR_GetCut(fmax(mean_arr - step, targetARRf));
 		else						// ??????????
-			newARR = (uint16_t)ARR_GetCut(fmin(mean_arr + step*0.5, targetARRf));
+			newARR = (uint16_t)ARR_GetCut(fmin(mean_arr + step, targetARRf));
 		
 		if (newARR > 1300)
 			PWM_ARR = PWM_variable_10;
@@ -377,18 +449,23 @@ void SetSpeed(uint16_t rpm)
 		if (newARR > 270 && newARR <= 350)
 			PWM_ARR = PWM_variable_40;
 		if (newARR > 210 && newARR <= 270)
-			PWM_ARR = PWM_variable_50;
+			PWM_ARR = PWM_variable_60;
 		if (newARR > 180 && newARR <= 210)
-			PWM_ARR = PWM_variable_60;		
+			PWM_ARR = PWM_variable_70;		
 		if (newARR > 160 && newARR <= 180)
-			PWM_ARR = PWM_variable_70;
-		if (newARR > 140 && newARR <= 160)
 			PWM_ARR = PWM_variable_80;
-		if (newARR > 120 && newARR <= 140)
+		if (newARR > 140 && newARR <= 160)
 			PWM_ARR = PWM_variable_90;
+		if (newARR > 120 && newARR <= 140)
+			PWM_ARR = PWM_variable_100;
 		if (newARR <= 120)
 			PWM_ARR = PWM_variable_100;
-		
+			
+			/*
+			novel = 70084/newARR;
+			InitPower(PWM_variable_10,novel);
+			PWM_ARR = PWM_variable_10;
+		*/
 		/*
 		if (novel == 10)
 			PWM_ARR = PWM_variable_10;
@@ -435,6 +512,13 @@ float ARR_GetStep(float input_arr)
 		input_arr = 140;
 	
 	step = pow((input_arr - 140.0f) / (7000.0f - 140.0f), 1.5) * 1300 + 8 + offset;
+	
+	step_way[counter_step] = step;
+	counter_step++;
+	if(counter_step == 2){
+		counter_step = 0;
+	}
+	
 //	
 //	if (input_arr < 400)
 //		step = 5;
