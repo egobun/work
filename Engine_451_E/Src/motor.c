@@ -168,11 +168,11 @@ void motor_init()
 	InitPower(PWM_variable_30, 30);
 	InitPower(PWM_variable_40, 40);
 	InitPower(PWM_variable_50, 50);
-	InitPower(PWM_variable_60, 60);
-	InitPower(PWM_variable_70, 70);
-	InitPower(PWM_variable_80, 80);
-	InitPower(PWM_variable_90, 90);
-	InitPower(PWM_variable_100, 100);
+	InitPower(PWM_variable_60, 50);
+	InitPower(PWM_variable_70, 60);
+	InitPower(PWM_variable_80, 70);
+	InitPower(PWM_variable_90, 70);
+	InitPower(PWM_variable_100, 70);
 }
 
 
@@ -355,82 +355,158 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 				state--;
 		}
 	}
-	
-	if (!i)
-		
-		//TIM8->CCER &= ~0x555;  			//Disable all
-	TIM8->CCER |= 0x555;     		
-	switch (state)
-	{
-	case 0:
-		//TIM8->CCR3 = PWM_ARR[i];
-		TIM8->CCR3 = PWM_ARR[19 - i];
-		TIM8->CCR2 = PWM_ARR[39 - i];
-		TIM8->CCR1 = PWM_min;
-		
+	if(direction == 0){
 		if (!i)
-			TIM8->CCER |= 0x555; //Enable CH3 CH2
-	
-		break;
+			
+			//TIM8->CCER &= ~0x555;  			//Disable all
+		TIM8->CCER |= 0x555;     		
+		switch (state)
+		{
+		case 0:
+			//TIM8->CCR3 = PWM_ARR[i];
+			TIM8->CCR3 = PWM_ARR[19 - i];
+			TIM8->CCR2 = PWM_ARR[39 - i];
+			TIM8->CCR1 = PWM_min;
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH2
 		
-	case 1:
-		TIM8->CCR3 = PWM_ARR[i + 20];
-		//TIM8->CCR2 = PWM_ARR[19-i];
-		TIM8->CCR2 = PWM_ARR[i];
-		TIM8->CCR1 = PWM_min;
+			break;
+			
+		case 1:
+			TIM8->CCR3 = PWM_ARR[i + 20];
+			//TIM8->CCR2 = PWM_ARR[19-i];
+			TIM8->CCR2 = PWM_ARR[i];
+			TIM8->CCR1 = PWM_min;
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH1
+			
+			break;
+			
+		case 2:
+			TIM8->CCR3 = PWM_ARR[39 - i];
+			TIM8->CCR2 = PWM_min;
+			//TIM8->CCR1 = PWM_ARR[i];
+			TIM8->CCR1 = PWM_ARR[19 - i];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH2 CH1
+			
+			break;
+			
+		case 3:
+			//TIM8->CCR3 = PWM_ARR[19-i];
+			TIM8->CCR3 = PWM_ARR[i];
+			TIM8->CCR2 = PWM_min;
+			TIM8->CCR1 = PWM_ARR[i + 20];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH2
+			
+			break;
+			
+		case 4:
+			TIM8->CCR3 = PWM_min;
+			//TIM8->CCR2 = PWM_ARR[i];
+			TIM8->CCR2 = PWM_ARR[19 - i];
+			TIM8->CCR1 = PWM_ARR[39 - i];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH1
+			
+			break;
+			
+		case 5:
+			TIM8->CCR3 = PWM_min;
+			TIM8->CCR2 = PWM_ARR[i + 20];
+			//TIM8->CCR1 = PWM_ARR[19-i];
+			TIM8->CCR1 = PWM_ARR[i];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH2 CH1
+			
+			break;
+		}
 		
-		if (!i)
-			TIM8->CCER |= 0x555; //Enable CH3 CH1
-		
-		break;
-		
-	case 2:
-		TIM8->CCR3 = PWM_ARR[39 - i];
-		TIM8->CCR2 = PWM_min;
-		//TIM8->CCR1 = PWM_ARR[i];
-		TIM8->CCR1 = PWM_ARR[19 - i];
-		
-		if (!i)
-			TIM8->CCER |= 0x555; //Enable CH2 CH1
-		
-		break;
-		
-	case 3:
-		//TIM8->CCR3 = PWM_ARR[19-i];
-		TIM8->CCR3 = PWM_ARR[i];
-		TIM8->CCR2 = PWM_min;
-		TIM8->CCR1 = PWM_ARR[i + 20];
-		
-		if (!i)
-			TIM8->CCER |= 0x555; //Enable CH3 CH2
-		
-		break;
-		
-	case 4:
-		TIM8->CCR3 = PWM_min;
-		//TIM8->CCR2 = PWM_ARR[i];
-		TIM8->CCR2 = PWM_ARR[19 - i];
-		TIM8->CCR1 = PWM_ARR[39 - i];
-		
-		if (!i)
-			TIM8->CCER |= 0x555; //Enable CH3 CH1
-		
-		break;
-		
-	case 5:
-		TIM8->CCR3 = PWM_min;
-		TIM8->CCR2 = PWM_ARR[i + 20];
-		//TIM8->CCR1 = PWM_ARR[19-i];
-		TIM8->CCR1 = PWM_ARR[i];
-		
-		if (!i)
-			TIM8->CCER |= 0x555; //Enable CH2 CH1
-		
-		break;
+		i++;
 	}
-	
-	i++;
-	
+	if(direction == 1){
+		if (!i)
+			
+			//TIM8->CCER &= ~0x555;  			//Disable all
+		TIM8->CCER |= 0x555;     		
+		switch (state)
+		{
+		case 0:
+			//TIM8->CCR3 = PWM_ARR[i];
+			TIM8->CCR3 = PWM_ARR[19 - i];
+			TIM8->CCR2 = PWM_ARR[39 - i];
+			TIM8->CCR1 = PWM_min;
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH2
+		
+			break;
+			
+		case 1:
+			TIM8->CCR3 = PWM_ARR[i + 20];
+			TIM8->CCR2 = PWM_ARR[19-i];
+			//TIM8->CCR2 = PWM_ARR[i];
+			TIM8->CCR1 = PWM_min;
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH1
+			
+			break;
+			
+		case 2:
+			TIM8->CCR3 = PWM_ARR[39 - i];
+			TIM8->CCR2 = PWM_min;
+			TIM8->CCR1 = PWM_ARR[i];
+			//TIM8->CCR1 = PWM_ARR[19 - i];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH2 CH1
+			
+			break;
+			
+		case 3:
+			TIM8->CCR3 = PWM_ARR[19-i];
+			//TIM8->CCR3 = PWM_ARR[i];
+			TIM8->CCR2 = PWM_min;
+			TIM8->CCR1 = PWM_ARR[i + 20];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH2
+			
+			break;
+			
+		case 4:
+			TIM8->CCR3 = PWM_min;
+			TIM8->CCR2 = PWM_ARR[i];
+			//TIM8->CCR2 = PWM_ARR[19 - i];
+			TIM8->CCR1 = PWM_ARR[39 - i];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH3 CH1
+			
+			break;
+			
+		case 5:
+			TIM8->CCR3 = PWM_min;
+			TIM8->CCR2 = PWM_ARR[i + 20];
+			TIM8->CCR1 = PWM_ARR[19-i];
+			//TIM8->CCR1 = PWM_ARR[i];
+			
+			if (!i)
+				TIM8->CCER |= 0x555; //Enable CH2 CH1
+			
+			break;
+		}
+		
+		i++;
+	}
 	HAL_TIM_IRQHandler(&htim8);
 	HAL_TIM_IRQHandler(&htim14);
 }
