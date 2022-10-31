@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "motor.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -136,7 +137,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		SetSpeed(velocity);
+		//SetSpeed(velocity);
+		if(direction == direction_user){
+			SetSpeed(velocity);
+		}
+		else{
+			
+			SetSpeed(10);
+			if(mean_rate < 30){
+				direction = direction_user;
+			}
+		}
 		HAL_Delay(1);
     /* USER CODE END WHILE */
 

@@ -35,11 +35,13 @@ int last_arr_index = 0;
  
 uint8_t new_power = 30; 
 uint8_t new_direction = 0; 
+
 //For speed 
 uint16_t speed_impulse = 0; 
 float speed = 0.0f; 
 //direction 
 uint8_t direction = 1; 
+uint8_t direction_user = 1;
 uint8_t PWM_min = 0; 
 uint8_t novel = 10; 
 
@@ -163,16 +165,16 @@ void motor_init()
 	for (int i = 0; i < ARR_SIZE; i++)
 		arr_data[i] = DEFAULT_ARR;
 	
-	InitPower(PWM_variable_10, 100);
-	InitPower(PWM_variable_20, 100);
-	InitPower(PWM_variable_30, 50);
-	InitPower(PWM_variable_40, 80);
-	InitPower(PWM_variable_50, 90);
-	InitPower(PWM_variable_60, 100);
-	InitPower(PWM_variable_70, 100);
-	InitPower(PWM_variable_80, 100);
-	InitPower(PWM_variable_90, 100);
-	InitPower(PWM_variable_100, 100);
+	InitPower(PWM_variable_10, 10);
+	InitPower(PWM_variable_20, 20);
+	InitPower(PWM_variable_30, 30);
+	InitPower(PWM_variable_40, 40);
+	InitPower(PWM_variable_50, 50);
+	InitPower(PWM_variable_60, 50);
+	InitPower(PWM_variable_70, 60);
+	InitPower(PWM_variable_80, 70);
+	InitPower(PWM_variable_90, 70);
+	InitPower(PWM_variable_100, 70);
 }
 
 
@@ -252,7 +254,9 @@ void SetSpeed(uint16_t rpm)
  
  step = ARR_GetStep(mean_arr); 
  deltaRPM = -step * rate * rate / k; 
-  
+ if(mean_arr > 7000){
+		step *= 3; 
+ }
 // if (fabs(mean_arr - targetARRf) < 2 * step)  
 // { 
 //  __disable_irq(); 
@@ -432,7 +436,6 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 		i++;
 	}
 	
-	//true
 	if(direction == 1){
 		if (!i)
 			
@@ -442,165 +445,8 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 		{
 		case 0:
 			//TIM8->CCR3 = PWM_ARR[i];
-			TIM8->CCR3 = PWM_ARR[19 - i];
-			TIM8->CCR2 = PWM_ARR[39 - i];
-			TIM8->CCR1 = PWM_min;
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH2
-		
-			break;
-			
-		case 1:
-			TIM8->CCR3 = PWM_ARR[i + 20];
-			TIM8->CCR2 = PWM_ARR[19-i];
-			//TIM8->CCR2 = PWM_ARR[i];
-			TIM8->CCR1 = PWM_min;
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH1
-			
-			break;
-			
-		case 2:
-			TIM8->CCR3 = PWM_ARR[39 - i];
-			TIM8->CCR2 = PWM_min;
-			TIM8->CCR1 = PWM_ARR[i];
-			//TIM8->CCR1 = PWM_ARR[19 - i];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH2 CH1
-			
-			break;
-			
-		case 3:
-			TIM8->CCR3 = PWM_ARR[19-i];
-			//TIM8->CCR3 = PWM_ARR[i];
-			TIM8->CCR2 = PWM_min;
-			TIM8->CCR1 = PWM_ARR[i + 20];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH2
-			
-			break;
-			
-		case 4:
-			TIM8->CCR3 = PWM_min;
-			TIM8->CCR2 = PWM_ARR[i];
-			//TIM8->CCR2 = PWM_ARR[19 - i];
-			TIM8->CCR1 = PWM_ARR[39 - i];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH1
-			
-			break;
-			
-		case 5:
-			TIM8->CCR3 = PWM_min;
-			TIM8->CCR2 = PWM_ARR[i + 20];
-			TIM8->CCR1 = PWM_ARR[19-i];
-			//TIM8->CCR1 = PWM_ARR[i];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH2 CH1
-			
-			break;
-		}
-		
-		i++;
-	}
-	
-	/*
-	if(direction == 1){
-		if (!i)
-			
-			//TIM8->CCER &= ~0x555;  			//Disable all
-		TIM8->CCER |= 0x555;     		
-		switch (state)
-		{
-		case 0:
-			//TIM8->CCR3 = PWM_ARR[i];
-			TIM8->CCR1 = PWM_ARR[19 - i];
-			TIM8->CCR2 = PWM_ARR[39 - i];
-			TIM8->CCR3 = PWM_min;
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH2
-		
-			break;
-			
-		case 1:
-			TIM8->CCR1 = PWM_ARR[i + 20];
-			TIM8->CCR2 = PWM_ARR[19-i];
-			//TIM8->CCR2 = PWM_ARR[i];
-			TIM8->CCR3 = PWM_min;
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH1
-			
-			break;
-			
-		case 2:
-			TIM8->CCR1 = PWM_ARR[39 - i];
-			TIM8->CCR2 = PWM_min;
 			TIM8->CCR3 = PWM_ARR[i];
-			//TIM8->CCR1 = PWM_ARR[19 - i];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH2 CH1
-			
-			break;
-			
-		case 3:
-			TIM8->CCR1 = PWM_ARR[19-i];
-			//TIM8->CCR3 = PWM_ARR[i];
-			TIM8->CCR2 = PWM_min;
-			TIM8->CCR3 = PWM_ARR[i + 20];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH2
-			
-			break;
-			
-		case 4:
-			TIM8->CCR1 = PWM_min;
-			TIM8->CCR2 = PWM_ARR[i];
-			//TIM8->CCR2 = PWM_ARR[19 - i];
-			TIM8->CCR3 = PWM_ARR[39 - i];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH3 CH1
-			
-			break;
-			
-		case 5:
-			TIM8->CCR1 = PWM_min;
-			TIM8->CCR2 = PWM_ARR[i + 20];
-			TIM8->CCR3 = PWM_ARR[19-i];
-			//TIM8->CCR1 = PWM_ARR[i];
-			
-			if (!i)
-				TIM8->CCER |= 0x555; //Enable CH2 CH1
-			
-			break;
-		}
-		
-		i++;
-	}
-	*/
-	/*false
-	if(direction == 1){
-		if (!i)
-			
-			//TIM8->CCER &= ~0x555;  			//Disable all
-		TIM8->CCER |= 0x555;     		
-		switch (state)
-		{
-		case 0:
-			//TIM8->CCR3 = PWM_ARR[i];
-			TIM8->CCR3 = PWM_ARR[19 - i];
-			//TIM8->CCR2 = PWM_ARR[39 - i];
-		TIM8->CCR2 = PWM_ARR[i + 20];
+			TIM8->CCR2 = PWM_ARR[39 - i];
 			TIM8->CCR1 = PWM_min;
 			
 			if (!i)
@@ -609,8 +455,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 			break;
 			
 		case 1:
-			//TIM8->CCR3 = PWM_ARR[i + 20];
-			TIM8->CCR3 = PWM_ARR[39 - i];
+			TIM8->CCR3 = PWM_ARR[i + 20];
 			TIM8->CCR2 = PWM_ARR[19-i];
 			//TIM8->CCR2 = PWM_ARR[i];
 			TIM8->CCR1 = PWM_min;
@@ -621,8 +466,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 			break;
 			
 		case 2:
-			//TIM8->CCR3 = PWM_ARR[39 - i];
-			TIM8->CCR3 = PWM_ARR[i + 20];
+			TIM8->CCR3 = PWM_ARR[39 - i];
 			TIM8->CCR2 = PWM_min;
 			TIM8->CCR1 = PWM_ARR[i];
 			//TIM8->CCR1 = PWM_ARR[19 - i];
@@ -636,8 +480,8 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 			TIM8->CCR3 = PWM_ARR[19-i];
 			//TIM8->CCR3 = PWM_ARR[i];
 			TIM8->CCR2 = PWM_min;
-			//TIM8->CCR1 = PWM_ARR[i + 20];
-			TIM8->CCR1 = PWM_ARR[39 - i];
+			TIM8->CCR1 = PWM_ARR[i + 20];
+			
 			if (!i)
 				TIM8->CCER |= 0x555; //Enable CH3 CH2
 			
@@ -647,8 +491,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 			TIM8->CCR3 = PWM_min;
 			TIM8->CCR2 = PWM_ARR[i];
 			//TIM8->CCR2 = PWM_ARR[19 - i];
-			//TIM8->CCR1 = PWM_ARR[39 - i];
-			TIM8->CCR1 = PWM_ARR[i + 20];
+			TIM8->CCR1 = PWM_ARR[39 - i];
 			
 			if (!i)
 				TIM8->CCER |= 0x555; //Enable CH3 CH1
@@ -657,9 +500,8 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 			
 		case 5:
 			TIM8->CCR3 = PWM_min;
-			//TIM8->CCR2 = PWM_ARR[i + 20];
-		TIM8->CCR2 = PWM_ARR[39 - i];
-			TIM8->CCR1 = PWM_ARR[19 - i];
+			TIM8->CCR2 = PWM_ARR[i + 20];
+			TIM8->CCR1 = PWM_ARR[19-i];
 			//TIM8->CCR1 = PWM_ARR[i];
 			
 			if (!i)
@@ -670,8 +512,6 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 		
 		i++;
 	}
-	*/
-	
 	HAL_TIM_IRQHandler(&htim8);
 	HAL_TIM_IRQHandler(&htim14);
 }
