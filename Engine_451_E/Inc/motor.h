@@ -1,5 +1,10 @@
 #include <stdint.h>
 
+extern uint8_t direction; 
+extern uint8_t direction_user;
+extern float mean_rate;
+extern float mean_arr;
+
 void motor_init(void);
 void Enable(uint8_t new_state);
 void StartOpenLoop(void);

@@ -20,7 +20,7 @@ uint32_t ccr1[CCR_SIZE];
 uint32_t last_ccr1 = CCR_MAX; 
 int last_ccr1_index = 0; 
  
-#define DEFAULT_ARR 7000 
+#define DEFAULT_ARR 65000 
 #define MIN_ARR 140
 
 uint32_t newARR = DEFAULT_ARR; 
@@ -35,11 +35,13 @@ int last_arr_index = 0;
  
 uint8_t new_power = 30; 
 uint8_t new_direction = 0; 
+
 //For speed 
 uint16_t speed_impulse = 0; 
 float speed = 0.0f; 
 //direction 
 uint8_t direction = 1; 
+uint8_t direction_user = 1;
 uint8_t PWM_min = 0; 
 uint8_t novel = 10; 
 
@@ -48,7 +50,7 @@ uint8_t novel = 10;
 uint32_t ccr1[CCR_SIZE]; 
  
  
-#define DEFAULT_ARR 7000 
+
  
  
  
@@ -252,7 +254,9 @@ void SetSpeed(uint16_t rpm)
  
  step = ARR_GetStep(mean_arr); 
  deltaRPM = -step * rate * rate / k; 
-  
+ if(mean_arr > 7000){
+		step *= 3; 
+ }
 // if (fabs(mean_arr - targetARRf) < 2 * step)  
 // { 
 //  __disable_irq(); 
@@ -431,6 +435,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 		
 		i++;
 	}
+	
 	if(direction == 1){
 		if (!i)
 			
@@ -440,7 +445,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 		{
 		case 0:
 			//TIM8->CCR3 = PWM_ARR[i];
-			TIM8->CCR3 = PWM_ARR[19 - i];
+			TIM8->CCR3 = PWM_ARR[i];
 			TIM8->CCR2 = PWM_ARR[39 - i];
 			TIM8->CCR1 = PWM_min;
 			
